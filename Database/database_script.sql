@@ -5,8 +5,6 @@ DROP TABLE IF EXISTS newUser, meyersbriggs CASCADE;
 
 CREATE TABLE newUser (
 	user_id serial PRIMARY KEY,
-	first_name varchar(20) NOT NULL,
-	last_name varchar(30) NOT NULL,
     username varchar(30) NOT NULL,
 	birth_date date NOT NULL,
     password varchar(30) NOT NULL,
@@ -26,6 +24,8 @@ CREATE TABLE meyersbriggs (
 	feeling int,
 	judging int,
 	perceiving int,
+    assertive boolean,
+    turbulent boolean,
     created_dt timestamp NOT NULL DEFAULT now(),
     updated_dt timestamp NOT NULL DEFAULT now(),
 	CONSTRAINT FK_user_id FOREIGN KEY (user_id) REFERENCES newUser(user_id)
