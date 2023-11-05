@@ -1,7 +1,8 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user
-from app.models import db, User
-from app import app, login_manager
+from API.amasetia_app.models.user import User 
+from API.amasetia_app import db
+from API.amasetia_app import app, login_manager
 
 @login_manager.user_loader
 def load_user(user_id):
