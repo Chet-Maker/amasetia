@@ -1,7 +1,8 @@
 from flask import render_template, request, jsonify
 from flask_cors import cross_origin
-from flask_login import login_user, login_required, logout_user
-from API.amasetia_app.models.user import User 
+from flask_login import login_user, current_user, login_required, logout_user
+from API.amasetia_app.models.user import User
+from API.amasetia_app.models.meyersbriggs import MeyersBriggs 
 from API.amasetia_app import db
 from API.amasetia_app import app, login_manager
 from datetime import datetime
@@ -68,3 +69,41 @@ def signup():
 
     login_user(new_user)
     return jsonify(message='Signup successful'), 200
+
+@app.route('/api/userprofile', methods=['POST'])
+@login_required
+def userprofile():
+    data = request.get_json()
+    
+    user_id = current_user.get_id()
+    
+    profile = MeyersBriggs.query.filter_by(user_id=user_id).first()
+    if profile:
+        profile.extraversion = data['extraversion']
+        profile.introversion = data['introversion']
+        profile.sensing = data['sensing']
+        profile.intuition = data['intuition']
+        profile.thinking = data['thinking']
+        profile.feeling = data['feeling']
+        profile.judging = data['judging']
+        profile.perceiving = data['perceiving']
+    else:
+        profile = MeyersBriggs(
+            user_id=user_id,
+            extraversion=data['extraversion'],
+            introversion=data['introversion'],
+            sensing=data['sensing'],
+            intuition=data['intuition'],
+            thinking=data['thinking'],
+            feeling=data['feeling'],
+            judging=data['judging'],
+            perceiving=data['perceiving']
+        )
+        db.session.add(profile)
+    
+    try:
+        db.session.commit()
+        return jsonify(message="UserProfile updated successfully"), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify(error=str(e)), 500
