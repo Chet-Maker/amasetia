@@ -10,9 +10,12 @@ def load_user(user_id):
 
 @app.route('/login', methods=['POST'])
 def login():
+    print('login route hit')
+    print('request', request.get_json())
     data = request.get_json()
     username = data['username']
     password = data['password']
+    print(username, password)
 
     user = User.query.filter_by(username=username).first()
 
