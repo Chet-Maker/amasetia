@@ -1,14 +1,16 @@
 from flask import render_template, request, jsonify
+from flask_cors import cross_origin
 from flask_login import login_user, login_required, logout_user
 from API.amasetia_app.models.user import User 
 from API.amasetia_app import db
 from API.amasetia_app import app, login_manager
+from datetime import datetime
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
     print('login route hit')
     print('request', request.get_json())
@@ -43,12 +45,13 @@ def logout():
     logout_user()
     return jsonify(message='Logged out successfully')
 
-@app.route('/signup', methods=['POST'])
+@app.route('/api/signup', methods=['POST'])
 def signup():
     data = request.get_json()
     username = data['username']
     password = data['password']
     email = data['email']
+    birth_date = data['birthDate']
 
     username_exists = User.query.filter_by(username=username).first()
     email_exists = User.query.filter_by(email=email).first()
@@ -58,8 +61,7 @@ def signup():
 
     if email_exists:
         return jsonify(error='An account with that email already exists, feel free to sign in'), 400
-
-    new_user = User(username=username, email=email)
+    new_user = User(username=username, email=email, birth_date=birth_date)
     new_user.set_password(password)
     db.session.add(new_user)
     db.session.commit()

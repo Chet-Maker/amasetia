@@ -7,7 +7,7 @@ CREATE TABLE newuser (
 	user_id serial PRIMARY KEY,
     username varchar(30) NOT NULL,
 	birth_date date NOT NULL,
-    password varchar(30) NOT NULL,
+    password varchar(100) NOT NULL,
     created_dt timestamp NOT NULL DEFAULT now(),
     updated_dt timestamp NOT NULL DEFAULT now(),
     email varchar(100) NOT NULL,
